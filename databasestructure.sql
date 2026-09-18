@@ -1,15 +1,58 @@
 USE eda_project_db;
 
 
+
+-- ============================================================
+-- 1. CATEGORIES
+-- ============================================================
+
+CREATE TABLE categories (
+    category_id INT PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL UNIQUE
+);
+
+
+-- ============================================================
+-- 2. SUBCATEGORIES
+-- ============================================================
+
+CREATE TABLE subcategories (
+    subcategory_id INT PRIMARY KEY,
+    subcategory_name VARCHAR(150) NOT NULL,
+    category_id INT NOT NULL,
+
+    CONSTRAINT fk_subcategory_category
+        FOREIGN KEY (category_id)
+        REFERENCES categories(category_id),
+
+    CONSTRAINT uq_subcategory_category
+        UNIQUE (subcategory_name, category_id)
+);
+
+
+-- ============================================================
+-- 3. BRANDS
+-- ============================================================
+
 CREATE TABLE brands (
     brand_id INT PRIMARY KEY,
     brand_name VARCHAR(150) NOT NULL UNIQUE
 );
 
+
+-- ============================================================
+-- 4. SUPPLIERS
+-- ============================================================
+
 CREATE TABLE suppliers (
     supplier_id INT PRIMARY KEY,
     supplier_name VARCHAR(150) NOT NULL UNIQUE
 );
+
+
+-- ============================================================
+-- 5. CUSTOMERS
+-- ============================================================
 
 CREATE TABLE customers (
     customer_id VARCHAR(50) PRIMARY KEY,
@@ -26,21 +69,15 @@ CREATE TABLE customers (
     customer_acquisition_cost DECIMAL(12,2)
 );
 
-CREATE TABLE categories (
-    category_id INT PRIMARY KEY,
-    category_name VARCHAR(100) NOT NULL UNIQUE,
-    subcategory_id INT NOT NULL,
-    subcategory_name VARCHAR(150) NOT NULL
 
-);
-
-
-
+-- ============================================================
+-- 6. PRODUCTS
+-- ============================================================
 
 CREATE TABLE products (
     product_id VARCHAR(50) PRIMARY KEY,
     product_name VARCHAR(255),
-    category_id INT NOT NULL,
+    subcategory_id INT NOT NULL,
     brand_id INT NOT NULL,
     supplier_id INT NOT NULL,
     unit_price DECIMAL(12,2),
@@ -48,8 +85,8 @@ CREATE TABLE products (
     product_rating DECIMAL(3,2),
 
     CONSTRAINT fk_product_subcategory
-        FOREIGN KEY (category_id)
-        REFERENCES categories(category_id),
+        FOREIGN KEY (subcategory_id)
+        REFERENCES subcategories(subcategory_id),
 
     CONSTRAINT fk_product_brand
         FOREIGN KEY (brand_id)
@@ -61,6 +98,9 @@ CREATE TABLE products (
 );
 
 
+-- ============================================================
+-- 7. MARKETING CAMPAIGNS
+-- ============================================================
 
 CREATE TABLE marketing_campaigns (
     campaign_id INT PRIMARY KEY,
@@ -71,6 +111,10 @@ CREATE TABLE marketing_campaigns (
         UNIQUE (campaign_name, marketing_channel)
 );
 
+
+-- ============================================================
+-- 8. ORDERS
+-- ============================================================
 
 CREATE TABLE orders (
     order_id VARCHAR(50) PRIMARY KEY,
@@ -92,6 +136,10 @@ CREATE TABLE orders (
         REFERENCES marketing_campaigns(campaign_id)
 );
 
+
+-- ============================================================
+-- 9. ORDER ITEMS
+-- ============================================================
 
 CREATE TABLE order_items (
     order_item_id BIGINT PRIMARY KEY,
@@ -118,6 +166,10 @@ CREATE TABLE order_items (
 );
 
 
+-- ============================================================
+-- 10. PAYMENTS
+-- ============================================================
+
 CREATE TABLE payments (
     payment_id BIGINT PRIMARY KEY,
     order_id VARCHAR(50) NOT NULL,
@@ -130,6 +182,10 @@ CREATE TABLE payments (
         REFERENCES orders(order_id)
 );
 
+
+-- ============================================================
+-- 11. SHIPMENTS
+-- ============================================================
 
 CREATE TABLE shipments (
     shipment_id BIGINT PRIMARY KEY,
@@ -146,6 +202,10 @@ CREATE TABLE shipments (
 );
 
 
+-- ============================================================
+-- 12. RETURNS
+-- ============================================================
+
 CREATE TABLE returns (
     return_id BIGINT PRIMARY KEY,
     order_id VARCHAR(50) NOT NULL,
@@ -157,6 +217,10 @@ CREATE TABLE returns (
         REFERENCES orders(order_id)
 );
 
+
+-- ============================================================
+-- 13. REVIEWS
+-- ============================================================
 
 CREATE TABLE reviews (
     review_id BIGINT PRIMARY KEY,
@@ -176,8 +240,9 @@ CREATE TABLE reviews (
 );
 
 
-
-
+-- ============================================================
+-- 14. LOYALTY TRANSACTIONS
+-- ============================================================
 
 CREATE TABLE loyalty_transactions (
     loyalty_transaction_id BIGINT PRIMARY KEY,
@@ -194,5 +259,26 @@ CREATE TABLE loyalty_transactions (
         FOREIGN KEY (order_id)
         REFERENCES orders(order_id)
 );
+
+
+-- ============================================================
+-- 15. CUSTOMER METRICS
+-- ============================================================
+
+CREATE TABLE customer_metrics (
+    customer_id VARCHAR(50) PRIMARY KEY,
+    customer_lifetime_value DECIMAL(14,2),
+    is_repeat_customer BOOLEAN,
+    customer_order_count INT,
+
+    CONSTRAINT fk_customer_metrics_customer
+        FOREIGN KEY (customer_id)
+        REFERENCES customers(customer_id)
+);
+
+
+-- ============================================================
+-- VERIFY TABLES
+-- ============================================================
 
 SHOW TABLES;
