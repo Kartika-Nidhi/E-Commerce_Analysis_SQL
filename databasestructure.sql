@@ -1,11 +1,6 @@
 USE eda_project_db;
 
 
-CREATE TABLE categories (
-    category_id INT PRIMARY KEY,
-    category_name VARCHAR(100) NOT NULL UNIQUE
-);
-
 CREATE TABLE brands (
     brand_id INT PRIMARY KEY,
     brand_name VARCHAR(150) NOT NULL UNIQUE
@@ -31,59 +26,30 @@ CREATE TABLE customers (
     customer_acquisition_cost DECIMAL(12,2)
 );
 
-CREATE TABLE subcategories (
-    subcategory_id INT PRIMARY KEY,
-    subcategory_name VARCHAR(150) NOT NULL,
-    category_id INT NOT NULL,
+CREATE TABLE categories (
+    category_id INT PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL UNIQUE,
+    subcategory_id INT NOT NULL,
+    subcategory_name VARCHAR(150) NOT NULL
 
-    CONSTRAINT fk_subcategory_category
+);
+
+
+
+
+CREATE TABLE products (
+    product_id VARCHAR(50) PRIMARY KEY,
+    product_name VARCHAR(255),
+    category_id INT NOT NULL,
+    brand_id INT NOT NULL,
+    supplier_id INT NOT NULL,
+    unit_price DECIMAL(12,2),
+    product_cost DECIMAL(12,2),
+    product_rating DECIMAL(3,2),
+
+    CONSTRAINT fk_product_subcategory
         FOREIGN KEY (category_id)
         REFERENCES categories(category_id),
-
-    CONSTRAINT uq_subcategory_category
-        UNIQUE (subcategory_name, category_id)
-);
-
-
-
-CREATE TABLE products (
-    product_id VARCHAR(50) PRIMARY KEY,
-    product_name VARCHAR(255),
-    subcategory_id INT NOT NULL,
-    brand_id INT NOT NULL,
-    supplier_id INT NOT NULL,
-    unit_price DECIMAL(12,2),
-    product_cost DECIMAL(12,2),
-    product_rating DECIMAL(3,2),
-
-    CONSTRAINT fk_product_subcategory
-        FOREIGN KEY (subcategory_id)
-        REFERENCES subcategories(subcategory_id),
-
-    CONSTRAINT fk_product_brand
-        FOREIGN KEY (brand_id)
-        REFERENCES brands(brand_id),
-
-    CONSTRAINT fk_product_supplier
-        FOREIGN KEY (supplier_id)
-        REFERENCES suppliers(supplier_id)
-);
-
-
-
-CREATE TABLE products (
-    product_id VARCHAR(50) PRIMARY KEY,
-    product_name VARCHAR(255),
-    subcategory_id INT NOT NULL,
-    brand_id INT NOT NULL,
-    supplier_id INT NOT NULL,
-    unit_price DECIMAL(12,2),
-    product_cost DECIMAL(12,2),
-    product_rating DECIMAL(3,2),
-
-    CONSTRAINT fk_product_subcategory
-        FOREIGN KEY (subcategory_id)
-        REFERENCES subcategories(subcategory_id),
 
     CONSTRAINT fk_product_brand
         FOREIGN KEY (brand_id)
@@ -211,21 +177,6 @@ CREATE TABLE reviews (
 
 
 
-CREATE TABLE loyalty_transactions (
-    loyalty_transaction_id BIGINT PRIMARY KEY,
-    customer_id VARCHAR(50) NOT NULL,
-    order_id VARCHAR(50) NOT NULL,
-    loyalty_points_earned INT,
-    loyalty_points_redeemed INT,
-
-    CONSTRAINT fk_loyalty_customer
-        FOREIGN KEY (customer_id)
-        REFERENCES customers(customer_id),
-
-    CONSTRAINT fk_loyalty_order
-        FOREIGN KEY (order_id)
-        REFERENCES orders(order_id)
-);
 
 
 CREATE TABLE loyalty_transactions (
