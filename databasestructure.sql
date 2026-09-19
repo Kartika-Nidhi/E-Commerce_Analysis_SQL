@@ -8,30 +8,16 @@ USE eda_project_db;
 
 CREATE TABLE categories (
     category_id INT PRIMARY KEY,
-    category_name VARCHAR(100) NOT NULL UNIQUE
+    category_name VARCHAR(100) NOT NULL,
+    subcategory_id INT NOT NULL,
+    subcategory_name VARCHAR(150) NOT NULL
 );
 
 
--- ============================================================
--- 2. SUBCATEGORIES
--- ============================================================
-
-CREATE TABLE subcategories (
-    subcategory_id INT PRIMARY KEY,
-    subcategory_name VARCHAR(150) NOT NULL,
-    category_id INT NOT NULL,
-
-    CONSTRAINT fk_subcategory_category
-        FOREIGN KEY (category_id)
-        REFERENCES categories(category_id),
-
-    CONSTRAINT uq_subcategory_category
-        UNIQUE (subcategory_name, category_id)
-);
 
 
 -- ============================================================
--- 3. BRANDS
+-- 2. BRANDS
 -- ============================================================
 
 CREATE TABLE brands (
@@ -41,7 +27,7 @@ CREATE TABLE brands (
 
 
 -- ============================================================
--- 4. SUPPLIERS
+-- 3. SUPPLIERS
 -- ============================================================
 
 CREATE TABLE suppliers (
@@ -51,7 +37,7 @@ CREATE TABLE suppliers (
 
 
 -- ============================================================
--- 5. CUSTOMERS
+-- 4. CUSTOMERS
 -- ============================================================
 
 CREATE TABLE customers (
@@ -71,22 +57,18 @@ CREATE TABLE customers (
 
 
 -- ============================================================
--- 6. PRODUCTS
+-- 5. PRODUCTS
 -- ============================================================
 
 CREATE TABLE products (
     product_id VARCHAR(50) PRIMARY KEY,
     product_name VARCHAR(255),
-    subcategory_id INT NOT NULL,
+    category_id INT NOT NULL,
     brand_id INT NOT NULL,
     supplier_id INT NOT NULL,
     unit_price DECIMAL(12,2),
     product_cost DECIMAL(12,2),
     product_rating DECIMAL(3,2),
-
-    CONSTRAINT fk_product_subcategory
-        FOREIGN KEY (subcategory_id)
-        REFERENCES subcategories(subcategory_id),
 
     CONSTRAINT fk_product_brand
         FOREIGN KEY (brand_id)
@@ -99,7 +81,7 @@ CREATE TABLE products (
 
 
 -- ============================================================
--- 7. MARKETING CAMPAIGNS
+-- 6. MARKETING CAMPAIGNS
 -- ============================================================
 
 CREATE TABLE marketing_campaigns (
@@ -113,7 +95,7 @@ CREATE TABLE marketing_campaigns (
 
 
 -- ============================================================
--- 8. ORDERS
+-- 7. ORDERS
 -- ============================================================
 
 CREATE TABLE orders (
@@ -138,7 +120,7 @@ CREATE TABLE orders (
 
 
 -- ============================================================
--- 9. ORDER ITEMS
+-- 8. ORDER ITEMS
 -- ============================================================
 
 CREATE TABLE order_items (
@@ -167,7 +149,7 @@ CREATE TABLE order_items (
 
 
 -- ============================================================
--- 10. PAYMENTS
+-- 9. PAYMENTS
 -- ============================================================
 
 CREATE TABLE payments (
@@ -184,7 +166,7 @@ CREATE TABLE payments (
 
 
 -- ============================================================
--- 11. SHIPMENTS
+-- 10. SHIPMENTS
 -- ============================================================
 
 CREATE TABLE shipments (
@@ -203,7 +185,7 @@ CREATE TABLE shipments (
 
 
 -- ============================================================
--- 12. RETURNS
+-- 11. RETURNS
 -- ============================================================
 
 CREATE TABLE returns (
@@ -219,7 +201,7 @@ CREATE TABLE returns (
 
 
 -- ============================================================
--- 13. REVIEWS
+-- 12. REVIEWS
 -- ============================================================
 
 CREATE TABLE reviews (
@@ -241,7 +223,7 @@ CREATE TABLE reviews (
 
 
 -- ============================================================
--- 14. LOYALTY TRANSACTIONS
+-- 13. LOYALTY TRANSACTIONS
 -- ============================================================
 
 CREATE TABLE loyalty_transactions (
@@ -262,7 +244,7 @@ CREATE TABLE loyalty_transactions (
 
 
 -- ============================================================
--- 15. CUSTOMER METRICS
+-- 14. CUSTOMER METRICS
 -- ============================================================
 
 CREATE TABLE customer_metrics (
